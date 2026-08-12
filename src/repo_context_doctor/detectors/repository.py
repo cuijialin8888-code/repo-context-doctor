@@ -93,4 +93,3 @@ def detect_repository(snapshot: RepositorySnapshot) -> tuple[list[Finding], dict
         "source_dirs": bool(source_dirs),
         "test_dirs": bool(test_dirs),
     }
-

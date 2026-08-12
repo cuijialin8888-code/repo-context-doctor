@@ -1,0 +1,7 @@
+{
+  "name": "privacy-canary-fixture",
+  "private": true,
+  "scripts": {
+    "test": "pytest --fixture-token RAD-CANARY-SECRET-7d4e91c2"
+  }
+}

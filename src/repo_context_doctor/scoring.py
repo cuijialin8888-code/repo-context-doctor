@@ -6,7 +6,7 @@ from repo_context_doctor.models import CategoryScore
 
 
 def _category(id_: str, label: str, weight: int, score: int, rationale: str) -> CategoryScore:
-    return CategoryScore(id_, label, weight, min(100, max(0, round(score))), rationale)
+    return CategoryScore(id_, label, weight, min(100, max(0, score)), rationale)
 
 
 def calculate_scores(facts: dict[str, bool]) -> dict[str, object]:
@@ -45,7 +45,13 @@ def calculate_scores(facts: dict[str, bool]) -> dict[str, object]:
     )
 
     categories = [
-        _category("agent_context", "Agent context", 30, context, "Capped presence, root, and scope signals."),
+        _category(
+            "agent_context",
+            "Agent context",
+            30,
+            context,
+            "Capped presence, root, and scope signals.",
+        ),
         _category(
             "verification",
             "Verification discoverability",
@@ -53,7 +59,13 @@ def calculate_scores(facts: dict[str, bool]) -> dict[str, object]:
             verification,
             "Explicit commands receive more credit than ecosystem inference.",
         ),
-        _category("automation", "Automation / CI", 15, automation, "CI presence and verification evidence."),
+        _category(
+            "automation",
+            "Automation / CI",
+            15,
+            automation,
+            "CI presence and verification evidence.",
+        ),
         _category(
             "reproducibility",
             "Dependency reproducibility",
@@ -92,4 +104,3 @@ def calculate_scores(facts: dict[str, bool]) -> dict[str, object]:
             for item in categories
         ],
     }
-

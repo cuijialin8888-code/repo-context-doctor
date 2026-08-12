@@ -28,10 +28,24 @@ def _frontmatter_value(text: str | None, key: str) -> str | None:
     if end == -1:
         return None
     block = text[3:end]
-    scalar = re.search(rf"(?mi)^\s*{re.escape(key)}\s*:\s*['\"]?([^\n'\"]+)", block)
-    if scalar:
-        value, _ = sanitize_excerpt(scalar.group(1), limit=160)
-        return value
+    lines = block.splitlines()
+    for index, line in enumerate(lines):
+        match = re.match(rf"^\s*{re.escape(key)}\s*:\s*(.*)$", line, re.IGNORECASE)
+        if not match:
+            continue
+        scalar = match.group(1).strip().strip("'\"")
+        if scalar:
+            value, _ = sanitize_excerpt(scalar, limit=160)
+            return value
+        items: list[str] = []
+        for nested in lines[index + 1 :]:
+            item = re.match(r"^\s+-\s*['\"]?([^'\"\n]+)", nested)
+            if not item:
+                break
+            items.append(item.group(1).strip())
+        if items:
+            value, _ = sanitize_excerpt(", ".join(items), limit=160)
+            return value
     return None
 
 
@@ -82,7 +96,11 @@ def _surface(snapshot: RepositorySnapshot, path: str) -> InstructionSurface | No
         kind = "cursor_rule"
         recognized = ("Cursor",)
         text = snapshot.read_text(path, max_bytes=16 * 1024)
-        scope = _frontmatter_value(text, "globs") or _scope_from_parent(path)
+        globs = _frontmatter_value(text, "globs")
+        always = _frontmatter_value(text, "alwaysApply")
+        scope = globs or (
+            "repository" if always and always.lower() == "true" else "activation-dependent"
+        )
         note = "Cursor .mdc rule; activation semantics are not evaluated."
     elif name == ".cursorrules":
         kind = "cursor_legacy"
@@ -92,7 +110,12 @@ def _surface(snapshot: RepositorySnapshot, path: str) -> InstructionSurface | No
         kind = "claude_rule"
         recognized = ("Claude Code",)
         text = snapshot.read_text(path, max_bytes=16 * 1024)
-        scope = _frontmatter_value(text, "paths") or _scope_from_parent(path)
+        default_scope = (
+            path.split("/.claude/rules/", 1)[0] + "/**"
+            if "/.claude/rules/" in path
+            else "repository"
+        )
+        scope = _frontmatter_value(text, "paths") or default_scope
         note = "Claude rule surface; paths frontmatter is reported without glob expansion."
     else:
         return None
@@ -120,7 +143,8 @@ def detect_instructions(
                     surface.kind,
                     surface.scope,
                     surface.recognized_by,
-                    "Shadowed for Codex in this directory by AGENTS.override.md; other tools may still read it.",
+                    "Shadowed for Codex in this directory by AGENTS.override.md; "
+                    "other tools may still read it.",
                 )
             updated.append(surface)
         surfaces = updated
@@ -133,7 +157,8 @@ def detect_instructions(
                 Category.AGENT_CONTEXT,
                 Status.PASS,
                 f"Detected {len(surfaces)} coding-agent instruction surface(s)",
-                "The report includes repository-relative paths, inferred scopes, and vendor recognition.",
+                "The report includes repository-relative paths, inferred scopes, "
+                "and vendor recognition.",
                 ", ".join(surface.path for surface in surfaces[:8]),
                 "Review multiple surfaces periodically for human-maintained consistency.",
                 Confidence.HIGH,
@@ -147,14 +172,35 @@ def detect_instructions(
                 Category.AGENT_CONTEXT,
                 Status.WARN,
                 "No documented coding-agent instruction surface was detected",
-                "A repository can still be usable, but agents may need to rediscover commands and boundaries.",
+                "A repository can still be usable, but agents may need to rediscover "
+                "commands and boundaries.",
                 "No supported instruction filename was present within the bounded scan.",
-                "Add one concise, vendor-appropriate instruction surface if repeated agent confusion occurs.",
+                "Add one concise, vendor-appropriate instruction surface if repeated "
+                "agent confusion occurs.",
                 Confidence.HIGH,
             )
         )
 
     kinds = {surface.kind for surface in surfaces}
+    invalid_copilot = [
+        surface.path
+        for surface in surfaces
+        if surface.kind == "copilot_path" and surface.scope == "path scope not declared"
+    ]
+    if invalid_copilot:
+        findings.append(
+            Finding(
+                "instructions.copilot-apply-to",
+                Category.AGENT_CONTEXT,
+                Status.FAIL,
+                "Path-specific Copilot instructions are missing applyTo",
+                "GitHub requires applyTo frontmatter for path-specific instruction files.",
+                ", ".join(invalid_copilot),
+                "Add an applyTo glob to each affected .instructions.md file.",
+                Confidence.HIGH,
+                tuple(invalid_copilot),
+            )
+        )
     if len(kinds) > 1:
         findings.append(
             Finding(
@@ -170,7 +216,12 @@ def detect_instructions(
             )
         )
 
-    nested = any("/" in surface.path for surface in surfaces if surface.kind in {"agents", "gemini"})
+    nested = any(
+        "/" in surface.path for surface in surfaces if surface.kind in {"agents", "gemini"}
+    )
     root = any(surface.scope == "repository" for surface in surfaces)
-    return surfaces, findings, {"instruction_any": bool(surfaces), "instruction_root": root, "scoped": nested}
-
+    return (
+        surfaces,
+        findings,
+        {"instruction_any": bool(surfaces), "instruction_root": root, "scoped": nested},
+    )

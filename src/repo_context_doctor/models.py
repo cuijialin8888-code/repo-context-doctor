@@ -136,4 +136,3 @@ class ScanReport:
             "privacy": raw["privacy"],
             "scan": raw["scan"],
         }
-

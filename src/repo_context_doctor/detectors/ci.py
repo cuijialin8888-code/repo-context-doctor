@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import PurePosixPath
 
 from repo_context_doctor.detectors.verification import _extract_documented_commands, _kind
@@ -33,10 +34,11 @@ def _run_blocks(text: str) -> list[str]:
     while index < len(lines):
         line = lines[index]
         stripped = line.strip()
-        if not stripped.startswith("run:"):
+        match = re.match(r"^(?:-\s*)?run\s*:\s*(.*)$", stripped)
+        if match is None:
             index += 1
             continue
-        value = stripped[4:].strip()
+        value = match.group(1).strip()
         if value and value not in {"|", ">", "|-", ">-"}:
             commands.extend(_extract_documented_commands(f"```\n{value}\n```"))
             index += 1
@@ -73,7 +75,8 @@ def detect_ci(
                 Category.AUTOMATION,
                 Status.PASS,
                 "Continuous-integration configuration detected",
-                "GitHub Actions receives bounded command inspection; other CI systems are presence-only.",
+                "GitHub Actions receives bounded command inspection; "
+                "other CI systems are presence-only.",
                 ", ".join(workflows + sorted(other)),
                 "Keep local verification guidance aligned with CI.",
                 Confidence.HIGH,
@@ -123,11 +126,15 @@ def detect_ci(
                 else "GitHub Actions detected without recognized verification commands",
                 "Workflow parsing is intentionally shallow and does not evaluate YAML semantics.",
                 ", ".join(kinds) if kinds else "No supported run command matched.",
-                "Review the workflow manually if commands are composed through reusable actions or variables.",
+                "Review the workflow manually if commands are composed through reusable "
+                "actions or variables.",
                 Confidence.MEDIUM,
                 tuple(workflows),
             )
         )
 
-    return ci_paths, findings, {"ci_detected": bool(workflows or other), "ci_verification": bool(ci_paths)}
-
+    return (
+        ci_paths,
+        findings,
+        {"ci_detected": bool(workflows or other), "ci_verification": bool(ci_paths)},
+    )

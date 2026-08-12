@@ -33,6 +33,12 @@ _OTHER_MANIFESTS = {
     "pom.xml": "Java",
 }
 
+_FIXTURE_DIRECTORIES = {"fixtures", "testdata"}
+
+
+def _is_fixture_manifest(path: PurePosixPath) -> bool:
+    return bool(_FIXTURE_DIRECTORIES & {part.lower() for part in path.parts[:-1]})
+
 
 def _parse_json(snapshot: RepositorySnapshot, path: str) -> dict[str, Any]:
     text = snapshot.read_text(path)
@@ -63,7 +69,7 @@ def detect_ecosystems(
         name = pure.name
         lower = name.lower()
         depth = len(pure.parts) - 1
-        if depth > 4:
+        if depth > 4 or _is_fixture_manifest(pure):
             continue
 
         try:
@@ -122,11 +128,15 @@ def detect_ecosystems(
             )
 
     powershell = [
-        path for path in snapshot.files if PurePosixPath(path).suffix.lower() in {".ps1", ".psd1", ".psm1"}
+        path
+        for path in snapshot.files
+        if PurePosixPath(path).suffix.lower() in {".ps1", ".psd1", ".psm1"}
     ]
     if powershell:
         state.ecosystems.add("PowerShell")
-        state.powershell_tests = [path for path in powershell if path.lower().endswith(".tests.ps1")]
+        state.powershell_tests = [
+            path for path in powershell if path.lower().endswith(".tests.ps1")
+        ]
 
     distinct_dirs = {directory for directory in primary_manifest_dirs if directory != "."}
     if len(distinct_dirs) > 1:
@@ -157,7 +167,8 @@ def detect_ecosystems(
                 "Monorepo or multi-package structure detected",
                 "The signal came from workspaces or multiple primary manifest directories.",
                 ", ".join(sorted(set(primary_manifest_dirs))),
-                "Check that instruction scopes and package-specific verification paths remain clear.",
+                "Check that instruction scopes and package-specific verification paths "
+                "remain clear.",
                 Confidence.MEDIUM,
                 tuple(state.manifests),
             )
@@ -179,4 +190,3 @@ def detect_ecosystems(
         )
 
     return state, findings, {"manifest_present": bool(state.manifests)}
-

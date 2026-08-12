@@ -1,0 +1,45 @@
+name: Detector or feature request
+description: Propose an evidence-backed, read-only capability.
+title: "[Proposal]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Evidence-discovery problem
+      description: What can a coding agent or maintainer not discover today?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Proposed repository evidence
+      description: Give exact filenames or syntax and link a primary specification if available.
+    validations:
+      required: true
+  - type: dropdown
+    id: classification
+    attributes:
+      label: Evidence type
+      options:
+        - Explicit repository metadata
+        - Documentation or instruction
+        - CI evidence
+        - Ecosystem inference
+        - Unsure
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: False-positive and privacy risks
+      description: Explain ambiguous cases and any sensitive content the detector might encounter.
+    validations:
+      required: true
+  - type: checkboxes
+    id: boundary
+    attributes:
+      label: Product boundary
+      options:
+        - label: The proposal can remain local, deterministic, read-only, and command-free at runtime.
+          required: true

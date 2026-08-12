@@ -156,4 +156,3 @@ def discover_repository(root: Path, *, limits: ScanLimits | None = None) -> Repo
                 snapshot.sensitive_files.add(relative)
 
     return snapshot
-

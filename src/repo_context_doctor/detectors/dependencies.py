@@ -23,7 +23,9 @@ def detect_dependencies(
     snapshot: RepositorySnapshot, state: EcosystemState
 ) -> tuple[list[Finding], dict[str, bool]]:
     findings: list[Finding] = []
-    node_lock_paths = [path for path in snapshot.files if PurePosixPath(path).name.lower() in _NODE_LOCKS]
+    node_lock_paths = [
+        path for path in snapshot.files if PurePosixPath(path).name.lower() in _NODE_LOCKS
+    ]
     node_managers = {_NODE_LOCKS[PurePosixPath(path).name.lower()] for path in node_lock_paths}
 
     declared_managers: set[str] = set()
@@ -68,7 +70,8 @@ def detect_dependencies(
                 Category.REPRODUCIBILITY,
                 Status.WARN,
                 "Declared Node.js package manager does not match lockfile signals",
-                "The packageManager field and discovered lockfiles name different manager families.",
+                "The packageManager field and discovered lockfiles name different "
+                "manager families.",
                 f"declared={sorted(declared_managers)}; lockfiles={sorted(node_managers)}",
                 "Align package.json packageManager and the committed lockfile.",
                 Confidence.HIGH,
@@ -76,7 +79,9 @@ def detect_dependencies(
             )
         )
 
-    other_lock_paths = [path for path in snapshot.files if PurePosixPath(path).name.lower() in _OTHER_LOCKS]
+    other_lock_paths = [
+        path for path in snapshot.files if PurePosixPath(path).name.lower() in _OTHER_LOCKS
+    ]
     lock_present = bool(node_lock_paths or other_lock_paths)
     if state.manifests and not lock_present:
         findings.append(
@@ -111,4 +116,3 @@ def detect_dependencies(
         declared_managers and node_managers and not declared_managers.issubset(node_managers)
     )
     return findings, {"lock_present": lock_present, "manager_consistent": consistent}
-

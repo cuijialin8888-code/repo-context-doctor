@@ -5,4 +5,3 @@ from repo_context_doctor.scanner import scan_repository
 
 __all__ = ["TOOL_VERSION", "scan_repository"]
 __version__ = TOOL_VERSION
-

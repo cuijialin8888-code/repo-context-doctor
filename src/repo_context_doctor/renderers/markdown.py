@@ -32,7 +32,15 @@ def render_markdown(report: ScanReport) -> str:
                 lines.append(f"  - Recommendation: {finding.recommendation}")
 
     if report.verification_paths:
-        lines.extend(["", "## Verification paths", "", "These commands were discovered but not executed.", ""])
+        lines.extend(
+            [
+                "",
+                "## Verification paths",
+                "",
+                "These commands were discovered but not executed.",
+                "",
+            ]
+        )
         lines.append("| Kind | Command | Provenance | Confidence | Source |")
         lines.append("|---|---|---|---|---|")
         for path in report.verification_paths:
@@ -64,4 +72,3 @@ def render_markdown(report: ScanReport) -> str:
     redacted, count = redact_text(value)
     report.privacy.redactions_applied += count
     return redacted
-

@@ -1,0 +1,7 @@
+name: Canary
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: pytest --fixture-token RAD-CANARY-SECRET-7d4e91c2

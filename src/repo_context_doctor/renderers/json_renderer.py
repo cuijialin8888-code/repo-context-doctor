@@ -16,4 +16,3 @@ def render_json(report: ScanReport) -> str:
         value = json.dumps(report.to_dict(), ensure_ascii=False, indent=2)
         redacted, _ = redact_text(value)
     return redacted + "\n"
-

@@ -33,7 +33,9 @@ def _deduplicate_verification(paths: list[VerificationPath]) -> list[Verificatio
         if key not in seen:
             seen.add(key)
             result.append(path)
-    return sorted(result, key=lambda item: (item.kind, item.provenance, item.command, item.source_path))
+    return sorted(
+        result, key=lambda item: (item.kind, item.provenance, item.command, item.source_path)
+    )
 
 
 def _recommendations(findings: list[Finding]) -> list[str]:
@@ -100,8 +102,28 @@ def scan_repository(
                 Status.UNKNOWN,
                 "Some repository metadata could not be inspected",
                 "Permission or file-read errors make this a partial scan.",
-                f"discovery_errors={len(snapshot.discovery_errors)}; read_errors={len(snapshot.read_errors)}",
+                (
+                    f"discovery_errors={len(snapshot.discovery_errors)}; "
+                    f"read_errors={len(snapshot.read_errors)}"
+                ),
                 "Rerun with access to the affected metadata if complete coverage is required.",
+                Confidence.HIGH,
+            )
+        )
+    if snapshot.oversized_files or snapshot.undecodable_files:
+        findings.append(
+            Finding(
+                "scan.text-skipped",
+                Category.REPOSITORY,
+                Status.UNKNOWN,
+                "Some metadata text was safely skipped",
+                "Oversized or non-UTF-8 files are not fully interpreted.",
+                (
+                    f"oversized={len(snapshot.oversized_files)}; "
+                    f"undecodable={len(snapshot.undecodable_files)}"
+                ),
+                "Keep critical repository instructions and metadata UTF-8 and within "
+                "documented limits.",
                 Confidence.HIGH,
             )
         )

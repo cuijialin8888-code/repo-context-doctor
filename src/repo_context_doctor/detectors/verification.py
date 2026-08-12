@@ -42,7 +42,10 @@ _COMMAND_RE = re.compile(
 
 def _kind(command: str) -> str:
     lower = command.lower()
-    if any(token in lower for token in ("pytest", "npm test", "pnpm test", "cargo test", "go test", "invoke-pester")):
+    if any(
+        token in lower
+        for token in ("pytest", "npm test", "pnpm test", "cargo test", "go test", "invoke-pester")
+    ):
         return "test"
     if any(token in lower for token in ("lint", "ruff check", "clippy", "scriptanalyzer")):
         return "lint"
@@ -99,9 +102,8 @@ def _extract_documented_commands(text: str) -> list[str]:
             candidate = candidate[2:].strip()
         if not candidate or len(candidate) > 500:
             continue
-        if fenced or raw_line.startswith(("    ", "\t")):
-            if _COMMAND_RE.match(candidate):
-                commands.append(candidate)
+        if (fenced or raw_line.startswith(("    ", "\t"))) and _COMMAND_RE.match(candidate):
+            commands.append(candidate)
     return commands
 
 
@@ -124,7 +126,9 @@ def _deduplicate(paths: list[VerificationPath]) -> list[VerificationPath]:
         if key not in seen:
             seen.add(key)
             result.append(path)
-    return sorted(result, key=lambda item: (item.kind, item.provenance, item.command, item.source_path))
+    return sorted(
+        result, key=lambda item: (item.kind, item.provenance, item.command, item.source_path)
+    )
 
 
 def detect_verification(
@@ -189,7 +193,9 @@ def detect_verification(
         text = snapshot.read_text(path)
         if text is None:
             continue
-        provenance = Provenance.INSTRUCTION if path in instruction_paths else Provenance.DOCUMENTATION
+        provenance = (
+            Provenance.INSTRUCTION if path in instruction_paths else Provenance.DOCUMENTATION
+        )
         for command in _extract_documented_commands(text):
             safe, _ = sanitize_excerpt(command)
             paths.append(
@@ -261,7 +267,9 @@ def detect_verification(
 
     paths = _deduplicate(paths)
     findings: list[Finding] = []
-    by_kind = {kind: [path for path in paths if path.kind == kind] for kind in _SCRIPT_KINDS.values()}
+    by_kind = {
+        kind: [path for path in paths if path.kind == kind] for kind in _SCRIPT_KINDS.values()
+    }
     test_paths = by_kind.get("test", [])
     explicit_test = any(path.provenance != Provenance.INFERRED for path in test_paths)
     if explicit_test:
@@ -271,7 +279,8 @@ def detect_verification(
                 Category.VERIFICATION,
                 Status.PASS,
                 "Explicit test verification path discovered",
-                "The command came from repository-owned metadata, instructions, documentation, or CI.",
+                "The command came from repository-owned metadata, instructions, "
+                "documentation, or CI.",
                 ", ".join(path.command for path in test_paths[:5]),
                 "Keep the command aligned across instructions, manifests, and CI.",
                 Confidence.HIGH,
@@ -287,7 +296,8 @@ def detect_verification(
                 "Only an inferred test path was discovered",
                 "The command is an ecosystem convention, not explicit repository guidance.",
                 ", ".join(path.command for path in test_paths),
-                "Document the intended test command if contributors need a repository-specific path.",
+                "Document the intended test command if contributors need a "
+                "repository-specific path.",
                 Confidence.MEDIUM,
                 tuple(path.source_path for path in test_paths),
                 Provenance.INFERRED,
@@ -302,7 +312,8 @@ def detect_verification(
                 "No test command was discovered",
                 "Test files or frameworks are not treated as proof of a runnable command.",
                 "No supported explicit or inferred test invocation was found.",
-                "Document a verified test command in a manifest, instruction file, README, Makefile, or CI.",
+                "Document a verified test command in a manifest, instruction file, "
+                "README, Makefile, or CI.",
                 Confidence.HIGH,
             )
         )

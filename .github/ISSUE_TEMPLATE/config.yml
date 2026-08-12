@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Private security report
+    url: https://github.com/cuijialin8888-code/repo-context-doctor/security/advisories/new
+    about: Report vulnerabilities or suspected disclosure privately.

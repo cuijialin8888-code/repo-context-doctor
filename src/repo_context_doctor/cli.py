@@ -19,13 +19,17 @@ def build_parser() -> argparse.ArgumentParser:
         prog="repo-context-doctor",
         description="Read-only evidence inventory for coding-agent context and verification paths.",
     )
-    parser.add_argument("path", nargs="?", default=".", help="Local repository directory (default: .)")
+    parser.add_argument(
+        "path", nargs="?", default=".", help="Local repository directory (default: .)"
+    )
     output = parser.add_mutually_exclusive_group()
     output.add_argument("--json", action="store_true", help="Render machine-readable JSON")
     output.add_argument("--markdown", action="store_true", help="Render Markdown")
     parser.add_argument("--output", type=Path, help="Write the report to this explicit path")
     parser.add_argument("--no-score", action="store_true", help="Omit the heuristic evidence score")
-    parser.add_argument("--verbose", action="store_true", help="Show exception types for fatal errors")
+    parser.add_argument(
+        "--verbose", action="store_true", help="Show exception types for fatal errors"
+    )
     parser.add_argument("--version", action="version", version=f"%(prog)s {TOOL_VERSION}")
     return parser
 
@@ -68,4 +72,3 @@ def main(argv: list[str] | None = None) -> int:
         safe, _ = redact_text(message)
         print(safe, file=sys.stderr)
         return 3
-

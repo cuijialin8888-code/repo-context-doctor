@@ -69,4 +69,3 @@ def sanitize_excerpt(value: str, *, limit: int = 280) -> tuple[str, int]:
     if len(compact) > limit:
         compact = compact[: limit - 1] + "…"
     return redact_text(compact)
-

@@ -1,0 +1,2 @@
+[tool.pytest.ini_options]
+addopts = "--fixture-token RAD-CANARY-SECRET-7d4e91c2"

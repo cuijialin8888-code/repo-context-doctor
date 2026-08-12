@@ -1,0 +1,65 @@
+name: Bug report
+description: Report a reproducible scanner or report problem using non-sensitive evidence.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not paste secrets or confidential repository content. Security issues belong in a private advisory.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: repo-context-doctor 0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: operating-system
+    attributes:
+      label: Operating system
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      placeholder: Python 3.13.5
+    validations:
+      required: true
+  - type: textarea
+    id: fixture
+    attributes:
+      label: Minimal synthetic repository layout
+      description: Replace private names and values. Include only files needed to reproduce the problem.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command and output
+      description: Remove absolute paths, usernames, tokens, and private content.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety checks
+      options:
+        - label: I used a synthetic or public fixture and removed secrets.
+          required: true
+        - label: This is not a security vulnerability.
+          required: true

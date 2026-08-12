@@ -69,4 +69,3 @@ def render_console(report: ScanReport) -> str:
     redacted, count = redact_text(value)
     report.privacy.redactions_applied += count
     return redacted
-
