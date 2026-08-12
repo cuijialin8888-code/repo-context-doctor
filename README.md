@@ -21,24 +21,26 @@ It is deterministic, has no runtime dependencies, does not call an LLM or API, d
 
 ## Quick start
 
-Python 3.11 or newer is required. Install from a tagged GitHub release:
+Python 3.11 or newer is required. Install the wheel built and tested by the v0.1.0 Release workflow:
+
+```bash
+python -m pip install "https://github.com/cuijialin8888-code/repo-context-doctor/releases/download/v0.1.0/repo_context_doctor-0.1.0-py3-none-any.whl"
+repo-context-doctor .
+```
+
+Git is not required for the Release wheel. Installing it uses network access to download the package from GitHub; a repository scan itself is local and offline. No LLM, API key, or third-party Python runtime package is required for a scan.
+
+[View the v0.1.0 Release](https://github.com/cuijialin8888-code/repo-context-doctor/releases/tag/v0.1.0)
+
+### Install from the tagged source
+
+As an alternative, install the same version from its Git tag:
 
 ```bash
 python -m pip install "repo-context-doctor @ git+https://github.com/cuijialin8888-code/repo-context-doctor.git@v0.1.0"
-repo-context-doctor .
 ```
 
-Or work from a source checkout:
-
-```bash
-git clone https://github.com/cuijialin8888-code/repo-context-doctor.git
-cd repo-context-doctor
-python -m venv .venv
-python -m pip install ".[dev]"
-repo-context-doctor .
-```
-
-The commands above install the tool. A scan itself is local and offline.
+This alternative requires Git. Contributors should use the source-checkout workflow under [Development](#development).
 
 ## Usage
 
@@ -62,6 +64,8 @@ repo-context-doctor . --no-score
 
 Exit code `0` means the scan completed, even when findings include gaps. Argument errors use `2`; an unexpected fatal scan error uses `3`. Findings and the optional score are evidence, not a CI quality gate.
 
+Uninstall with `python -m pip uninstall repo-context-doctor`.
+
 ## What the report looks like
 
 ```text
@@ -74,14 +78,16 @@ Git:           Yes
 Monorepo:      No
 
 Agent Context
-[PASS] Found coding-agent instruction surfaces
+[PASS] Detected 1 coding-agent instruction surface(s)
 
 Verification paths (not executed)
-- test: pytest [MANIFEST, HIGH] (pyproject.toml)
-- lint: ruff check . [INSTRUCTION, HIGH] (AGENTS.md)
+- test: python -m pytest [DOCUMENTATION, MEDIUM] (README.md)
+- lint: ruff check . [INSTRUCTION, MEDIUM] (AGENTS.md)
 ```
 
 Every verification path includes a source path, evidence origin, and confidence level. Commands are reported as strings and are never run.
+
+If a finding looks wrong or a signal is missing, use the [issue chooser](https://github.com/cuijialin8888-code/repo-context-doctor/issues/new/choose).
 
 ## Supported evidence
 

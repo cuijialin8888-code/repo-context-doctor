@@ -22,24 +22,26 @@ Repo Context Doctor 帮你回答：编码代理进入仓库后，实际上能看
 
 ## 快速开始
 
-需要 Python 3.11 或更高版本。可从带标签的 GitHub 版本安装：
+需要 Python 3.11 或更高版本。普通使用者推荐直接安装由 v0.1.0 Release workflow 构建并验证的 wheel，不需要先 clone 仓库：
+
+```bash
+python -m pip install "https://github.com/cuijialin8888-code/repo-context-doctor/releases/download/v0.1.0/repo_context_doctor-0.1.0-py3-none-any.whl"
+repo-context-doctor .
+```
+
+安装 wheel 时需要通过网络从 GitHub 下载；安装后的仓库扫描在本地离线完成。扫描不需要 Git、LLM、API key 或第三方 Python 运行时包。
+
+[查看 v0.1.0 Release](https://github.com/cuijialin8888-code/repo-context-doctor/releases/tag/v0.1.0)
+
+### 从带标签的源码安装
+
+也可以从 Git tag 安装同一版本：
 
 ```bash
 python -m pip install "repo-context-doctor @ git+https://github.com/cuijialin8888-code/repo-context-doctor.git@v0.1.0"
-repo-context-doctor .
 ```
 
-也可以从源码安装：
-
-```bash
-git clone https://github.com/cuijialin8888-code/repo-context-doctor.git
-cd repo-context-doctor
-python -m venv .venv
-python -m pip install ".[dev]"
-repo-context-doctor .
-```
-
-安装过程可能需要网络；实际扫描是本地、离线的。
+此备选方式需要 Git。参与开发请使用 [CONTRIBUTING.md](CONTRIBUTING.md) 中的源码检出流程。
 
 ## 用法
 
@@ -62,6 +64,29 @@ repo-context-doctor . --no-score
 ```
 
 扫描完成返回 `0`，即使报告中存在缺口；参数错误返回 `2`；意外的致命扫描错误返回 `3`。发现项和分数都不是 CI 质量门。
+
+卸载命令：`python -m pip uninstall repo-context-doctor`。
+
+## 输出示例
+
+```text
+# Repo Context Doctor 0.1.0
+
+Repository
+Name:          example-project
+Ecosystems:    Python
+Git:           Yes
+Monorepo:      No
+
+Agent Context
+[PASS] Detected 1 coding-agent instruction surface(s)
+
+Verification paths (not executed)
+- test: python -m pytest [DOCUMENTATION, MEDIUM] (README.md)
+- lint: ruff check . [INSTRUCTION, MEDIUM] (AGENTS.md)
+```
+
+命令只会作为字符串报告，不会被执行。如果发现项看起来不正确或缺少应有信号，请使用 [Issue chooser](https://github.com/cuijialin8888-code/repo-context-doctor/issues/new/choose) 反馈。
 
 ## 检查什么
 
