@@ -1,0 +1,13 @@
+/.venv/
+/dist/
+/build/
+/.pytest_cache/
+/.ruff_cache/
+/.coverage
+/htmlcov/
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.json.tmp
+*.md.tmp
+
