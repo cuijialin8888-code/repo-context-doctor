@@ -155,6 +155,8 @@ python -m build
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing a detector. The extension contract is described in [Adding a detector](docs/adding-a-detector.md).
 
+Maintainers can use the [maintenance checklist](docs/maintenance.md) for focused compatibility, privacy, and release reviews.
+
 ## Support and security
 
 - Questions and reproducible bugs: [GitHub Issues](https://github.com/cuijialin8888-code/repo-context-doctor/issues)
