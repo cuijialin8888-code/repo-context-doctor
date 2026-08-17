@@ -33,3 +33,7 @@ The CI workflow also exercises Python 3.11 and 3.13 on Windows, macOS, and Linux
 - Do not add runtime dependencies, network access, subprocess execution, command execution from target repositories, symlink traversal, telemetry, or implicit target-repository writes.
 - Never weaken the privacy canary or turn unreadable evidence into an absence finding.
 - Do not create activity-only commits or claim support that has not been tested.
+
+## Review log
+
+- 2026-08-17: verified the public `main` branch, recent GitHub Actions runs, and open issue/PR queues; no follow-up was required.
