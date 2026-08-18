@@ -21,7 +21,7 @@ It is deterministic, has no runtime dependencies, does not call an LLM or API, d
 
 ## Quick start
 
-Python 3.11 or newer is required. Install the wheel built and tested by the v0.1.0 Release workflow:
+Python 3.11 or newer is required. The command below installs the wheel built and tested by the v0.1.0 Release workflow. If a newer release is available, use its matching wheel from the [latest release page](https://github.com/cuijialin8888-code/repo-context-doctor/releases/latest):
 
 ```bash
 python -m pip install "https://github.com/cuijialin8888-code/repo-context-doctor/releases/download/v0.1.0/repo_context_doctor-0.1.0-py3-none-any.whl"
@@ -30,7 +30,7 @@ repo-context-doctor .
 
 Git is not required for the Release wheel. Installing it uses network access to download the package from GitHub; a repository scan itself is local and offline. No LLM, API key, or third-party Python runtime package is required for a scan.
 
-[View the v0.1.0 Release](https://github.com/cuijialin8888-code/repo-context-doctor/releases/tag/v0.1.0)
+[View the latest release](https://github.com/cuijialin8888-code/repo-context-doctor/releases/latest)
 
 ### Install from the tagged source
 
