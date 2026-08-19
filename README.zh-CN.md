@@ -1,11 +1,25 @@
-# Repo Context Doctor
+<p align="center">
+  <img src="docs/assets/hero.svg" alt="Repo Context Doctor——编码代理行动前的仓库证据清单" width="100%">
+</p>
 
-[![CI](https://github.com/cuijialin8888-code/repo-context-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/cuijialin8888-code/repo-context-doctor/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/cuijialin8888-code/repo-context-doctor)](https://github.com/cuijialin8888-code/repo-context-doctor/releases/latest)
-[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+<h1 align="center">Repo Context Doctor</h1>
 
-**一个只读、本地运行的编码代理上下文与仓库验证路径证据清单工具。**
+<p align="center"><strong>一个只读、本地运行的编码代理上下文与仓库验证路径证据清单工具。</strong></p>
+
+<p align="center">
+  <a href="https://github.com/cuijialin8888-code/repo-context-doctor/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/cuijialin8888-code/repo-context-doctor/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/cuijialin8888-code/repo-context-doctor/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/cuijialin8888-code/repo-context-doctor"></a>
+  <a href="https://www.python.org/"><img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB"></a>
+  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
+  <a href="https://github.com/cuijialin8888-code/repo-context-doctor/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/cuijialin8888-code/repo-context-doctor?style=flat"></a>
+</p>
+
+<p align="center">
+  <a href="#快速开始">快速开始</a> ·
+  <a href="#检查什么">检查范围</a> ·
+  <a href="#安全与隐私">安全边界</a> ·
+  <a href="README.md">English</a>
+</p>
 
 Repo Context Doctor 帮你回答：编码代理进入仓库后，实际上能看到哪些指令，能发现哪些测试、lint、格式化、类型检查和构建命令，这些结论又来自哪里、可信度如何。
 
@@ -19,6 +33,10 @@ Repo Context Doctor 帮你回答：编码代理进入仓库后，实际上能看
 - 输出 Console、JSON 或 Markdown。
 
 [English README](README.md)
+
+| 本地优先 | 证据可追溯 | 默认有边界 |
+| --- | --- | --- |
+| 不联网、不调用 API/LLM、无遥测 | 每条命令标明来源与可信度 | 不执行命令、不跟随符号链接、不隐式写入 |
 
 ## 快速开始
 
@@ -106,7 +124,7 @@ Python、Node.js、Rust、Go、PowerShell 提供较深的验证路径检测；�
 
 - 不跟随符号链接；
 - 排除 VCS、依赖、构建、缓存和常见敏感目录；
-- 跳过常见密钥文件，并对疑似凭证值进行纵深脱敏；
+- 跳过常见密钥文件，并对疑似凭证值进行纵深脱敏，包括独立出现的 OpenAI 与 GitHub Token 格式；
 - 报告仅使用仓库相对路径；
 - 超大、无法解码或无法访问的元数据会标为 `UNKNOWN`，不会假装不存在；
 - 默认限制深度 10、条目 20,000、单个文本文件 256 KiB。

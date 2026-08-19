@@ -1,11 +1,25 @@
-# Repo Context Doctor
+<p align="center">
+  <img src="docs/assets/hero.svg" alt="Repo Context Doctor — repository evidence before agent action" width="100%">
+</p>
 
-[![CI](https://github.com/cuijialin8888-code/repo-context-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/cuijialin8888-code/repo-context-doctor/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/cuijialin8888-code/repo-context-doctor)](https://github.com/cuijialin8888-code/repo-context-doctor/releases/latest)
-[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+<h1 align="center">Repo Context Doctor</h1>
 
-**A read-only, local evidence inventory for coding-agent instructions and repository verification paths.**
+<p align="center"><strong>A read-only, local evidence inventory for coding-agent instructions and repository verification paths.</strong></p>
+
+<p align="center">
+  <a href="https://github.com/cuijialin8888-code/repo-context-doctor/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/cuijialin8888-code/repo-context-doctor/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/cuijialin8888-code/repo-context-doctor/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/cuijialin8888-code/repo-context-doctor"></a>
+  <a href="https://www.python.org/"><img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB"></a>
+  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
+  <a href="https://github.com/cuijialin8888-code/repo-context-doctor/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/cuijialin8888-code/repo-context-doctor?style=flat"></a>
+</p>
+
+<p align="center">
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#supported-evidence">Supported evidence</a> ·
+  <a href="#safety-and-privacy">Safety</a> ·
+  <a href="README.zh-CN.md">中文</a>
+</p>
 
 Repo Context Doctor shows what a coding agent can discover before it changes a repository:
 
@@ -18,6 +32,10 @@ Repo Context Doctor shows what a coding agent can discover before it changes a r
 It is deterministic, has no runtime dependencies, does not call an LLM or API, does not use the network, and never executes commands found in the target repository.
 
 [中文说明](README.zh-CN.md)
+
+| Local by design | Evidence with provenance | Bounded by default |
+| --- | --- | --- |
+| No network, API, LLM, or telemetry | Every command includes source and confidence | No command execution, symlink following, or implicit writes |
 
 ## Quick start
 
@@ -111,7 +129,7 @@ The scanner is intentionally bounded:
 - repository commands are never executed;
 - symlinks are not followed;
 - dependency, build, cache, VCS, and common secret directories are excluded;
-- likely secret files and values are skipped or redacted;
+- likely secret files and values are skipped or redacted, including standalone OpenAI and GitHub token formats;
 - report source paths are repository-relative;
 - large and undecodable text files are reported as `UNKNOWN`, not silently treated as absent.
 

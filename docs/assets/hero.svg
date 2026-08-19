@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">Repo Context Doctor</title>
+  <desc id="desc">A repository context graph with evidence cards on a dark indigo and teal background.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="0.5" stop-color="#312e81"/>
+      <stop offset="1" stop-color="#0f766e"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.2" cy="0.3" r="0.75">
+      <stop offset="0" stop-color="#a78bfa" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#a78bfa" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#ffffff" stroke-opacity="0.055"/>
+    </pattern>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#020617" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="360" rx="28" fill="url(#background)"/>
+  <rect width="1200" height="360" rx="28" fill="url(#glow)"/>
+  <rect width="1200" height="360" rx="28" fill="url(#grid)"/>
+
+  <g transform="translate(74 61)" filter="url(#shadow)">
+    <rect width="238" height="238" rx="38" fill="#111827" fill-opacity="0.72" stroke="#c4b5fd" stroke-opacity="0.45"/>
+    <path d="M62 72h52l18 20h50a15 15 0 0 1 15 15v65a15 15 0 0 1-15 15H62a15 15 0 0 1-15-15V87a15 15 0 0 1 15-15Z" fill="#8b5cf6" fill-opacity="0.2" stroke="#c4b5fd" stroke-width="4"/>
+    <path d="M82 128h72M82 151h45" stroke="#f8fafc" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
+    <circle cx="188" cy="194" r="24" fill="#14b8a6"/>
+    <path d="m178 194 7 7 14-16" fill="none" stroke="#ecfeff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M54 42h22M162 42h22M43 218h22" stroke="#5eead4" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <g fill="#f8fafc" font-family="Inter, Segoe UI, Arial, sans-serif">
+    <text x="365" y="125" font-size="52" font-weight="750" letter-spacing="0.5">Repo Context Doctor</text>
+    <text x="368" y="171" font-size="22" fill="#dbeafe">Repository evidence before agent action.</text>
+    <text x="368" y="207" font-size="17" fill="#cbd5e1">Instructions · verification paths · CI · dependencies · safety boundaries</text>
+  </g>
+
+  <g transform="translate(368 244)" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1">
+    <g>
+      <rect width="112" height="38" rx="19" fill="#ffffff" fill-opacity="0.1" stroke="#c4b5fd" stroke-opacity="0.55"/>
+      <text x="56" y="24" text-anchor="middle" fill="#ede9fe">READ-ONLY</text>
+    </g>
+    <g transform="translate(126)">
+      <rect width="218" height="38" rx="19" fill="#ffffff" fill-opacity="0.1" stroke="#5eead4" stroke-opacity="0.55"/>
+      <text x="109" y="24" text-anchor="middle" fill="#ccfbf1">NO COMMAND EXECUTION</text>
+    </g>
+    <g transform="translate(358)">
+      <rect width="198" height="38" rx="19" fill="#ffffff" fill-opacity="0.1" stroke="#93c5fd" stroke-opacity="0.55"/>
+      <text x="99" y="24" text-anchor="middle" fill="#dbeafe">ZERO RUNTIME DEPS</text>
+    </g>
+  </g>
+</svg>

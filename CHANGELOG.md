@@ -4,6 +4,15 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+### Added
+
+- Recognize standardized `pylock.toml` and `pylock.<name>.toml` Python lockfile signals.
+
+### Fixed
+
+- Redact all documented GitHub token prefix families before excerpt truncation.
+- Ignore lockfiles under fixture and test-data trees when evaluating repository reproducibility.
+
 ## [0.1.0] - 2026-08-12
 
 ### Added

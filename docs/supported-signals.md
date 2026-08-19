@@ -24,7 +24,7 @@ The scanner inventories surfaces; it does not grade prose quality or guarantee a
 
 Deep verification logic exists for:
 
-- Python: `pyproject.toml`, `setup.cfg`, `setup.py`, `requirements.txt`, `tox.ini`;
+- Python: `pyproject.toml`, `setup.cfg`, `setup.py`, `requirements.txt`, `tox.ini`, and standardized [`pylock.toml`](https://packaging.python.org/en/latest/specifications/pylock-toml/) / `pylock.<name>.toml` lockfile signals;
 - Node.js: `package.json`, `pnpm-workspace.yaml`, package manager declaration, scripts, and common lockfiles;
 - Rust: `Cargo.toml` and conventional inferred commands;
 - Go: `go.mod` and conventional inferred commands;
@@ -57,11 +57,11 @@ GitHub Actions receives shallow `run:` inspection. GitLab CI, Azure Pipelines, a
 - root README and CONTRIBUTING/docs orientation;
 - conventional source and test directory names;
 - workspace or multi-manifest monorepo hints;
-- common Node, Rust, Go, Python lockfiles;
+- common Node, Rust, Go, and Python lockfiles, including standardized `pylock.toml` names;
 - mismatch between Node `packageManager` and lockfile family;
 - multiple Node lockfile families.
 
-Lockfile detection is presence-only and does not check freshness or dependency security.
+Lockfile detection is presence-only, ignores `fixtures` and `testdata` trees, and does not check freshness or dependency security.
 
 ## Scan limits
 

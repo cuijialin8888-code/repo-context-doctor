@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import PurePosixPath
 
 from repo_context_doctor.detectors.ecosystems import EcosystemState
@@ -17,6 +18,17 @@ _NODE_LOCKS = {
     "yarn.lock": "yarn",
 }
 _OTHER_LOCKS = {"cargo.lock", "go.sum", "pipfile.lock", "poetry.lock", "uv.lock"}
+_PYLOCK_NAME = re.compile(r"^pylock(?:\.[^.]+)?\.toml$")
+_FIXTURE_DIRECTORIES = {"fixtures", "testdata"}
+
+
+def _is_fixture_path(path: PurePosixPath) -> bool:
+    return bool(_FIXTURE_DIRECTORIES & {part.lower() for part in path.parts[:-1]})
+
+
+def _is_other_lock(path: PurePosixPath) -> bool:
+    name = path.name.lower()
+    return name in _OTHER_LOCKS or bool(_PYLOCK_NAME.fullmatch(name))
 
 
 def detect_dependencies(
@@ -24,7 +36,10 @@ def detect_dependencies(
 ) -> tuple[list[Finding], dict[str, bool]]:
     findings: list[Finding] = []
     node_lock_paths = [
-        path for path in snapshot.files if PurePosixPath(path).name.lower() in _NODE_LOCKS
+        path
+        for path in snapshot.files
+        if PurePosixPath(path).name.lower() in _NODE_LOCKS
+        and not _is_fixture_path(PurePosixPath(path))
     ]
     node_managers = {_NODE_LOCKS[PurePosixPath(path).name.lower()] for path in node_lock_paths}
 
@@ -80,7 +95,9 @@ def detect_dependencies(
         )
 
     other_lock_paths = [
-        path for path in snapshot.files if PurePosixPath(path).name.lower() in _OTHER_LOCKS
+        path
+        for path in snapshot.files
+        if _is_other_lock(PurePosixPath(path)) and not _is_fixture_path(PurePosixPath(path))
     ]
     lock_present = bool(node_lock_paths or other_lock_paths)
     if state.manifests and not lock_present:

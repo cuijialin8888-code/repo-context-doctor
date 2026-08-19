@@ -26,7 +26,7 @@ _SENSITIVE_SUFFIXES = {".key", ".p12", ".pem", ".pfx"}
 
 _SECRET_PATTERNS = (
     re.compile(r"(?i)\bsk-[A-Za-z0-9_-]{8,}\b"),
-    re.compile(r"(?i)\bghp_[A-Za-z0-9]{8,}\b"),
+    re.compile(r"(?i)\bgh[pousr]_[A-Za-z0-9]{8,}\b"),
     re.compile(r"(?i)\bgithub_pat_[A-Za-z0-9_]{8,}\b"),
     re.compile(r"(?i)\bBearer\s+[^\s'\"`]+"),
     re.compile(
@@ -63,9 +63,10 @@ def redact_text(value: str) -> tuple[str, int]:
 
 
 def sanitize_excerpt(value: str, *, limit: int = 280) -> tuple[str, int]:
-    """Normalize a short output excerpt and redact sensitive values."""
+    """Redact sensitive values before normalizing and truncating an excerpt."""
 
-    compact = " ".join(value.strip().split())
+    redacted, count = redact_text(value)
+    compact = " ".join(redacted.strip().split())
     if len(compact) > limit:
         compact = compact[: limit - 1] + "…"
-    return redact_text(compact)
+    return compact, count
