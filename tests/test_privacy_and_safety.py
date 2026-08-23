@@ -9,7 +9,7 @@ import pytest
 from conftest import finding
 
 from repo_context_doctor.models import Status
-from repo_context_doctor.privacy import CANARY
+from repo_context_doctor.privacy import CANARY, redact_text, sanitize_excerpt
 from repo_context_doctor.renderers.console import render_console
 from repo_context_doctor.renderers.json_renderer import render_json
 from repo_context_doctor.renderers.markdown import render_markdown
@@ -68,6 +68,38 @@ def test_canary_never_leaks_to_any_renderer(tmp_path):
         outputs.append(renderer(scan_repository(root)))
     assert all(CANARY not in output for output in outputs)
     assert all("[REDACTED]" in output for output in outputs)
+
+
+@pytest.mark.parametrize("prefix", ["ghp", "gho", "ghu", "ghs", "ghr"])
+def test_github_token_families_are_redacted_without_assignment(prefix):
+    token = f"{prefix}_FAKE1234567890"
+
+    safe, count = redact_text(f"probe output: {token}")
+
+    assert token not in safe
+    assert safe == "probe output: [REDACTED]"
+    assert count == 1
+
+
+def test_fine_grained_github_token_is_redacted_without_assignment():
+    token = "github_pat_FAKE_TOKEN_1234567890"
+
+    safe, count = redact_text(f"probe output: {token}")
+
+    assert token not in safe
+    assert safe == "probe output: [REDACTED]"
+    assert count == 1
+
+
+def test_excerpt_redacts_before_truncating_at_a_token_boundary():
+    token = "ghp_FAKE1234567890"
+
+    safe, count = sanitize_excerpt(f"{'x' * 271} {token}", limit=280)
+
+    assert token not in safe
+    assert "ghp_" not in safe
+    assert safe.endswith("…")
+    assert count == 1
 
 
 def test_absolute_repository_path_is_not_serialized(make_repo):

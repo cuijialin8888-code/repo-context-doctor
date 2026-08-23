@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import pytest
 from conftest import finding
 
 from repo_context_doctor.models import Provenance, Status
@@ -40,6 +41,34 @@ def test_declared_manager_mismatch_warns(make_repo):
     report = scan_repository(root)
 
     assert finding(report, "dependencies.package-manager-declaration").status is Status.WARN
+
+
+@pytest.mark.parametrize("lock_name", ["pylock.toml", "pylock.ci.toml"])
+def test_standard_python_lockfile_is_detected(make_repo, lock_name):
+    root = make_repo(
+        {
+            "pyproject.toml": "[project]\nname='x'\nversion='0.1.0'\n",
+            lock_name: "lock-version = '1.0'\n",
+        }
+    )
+    report = scan_repository(root)
+
+    lock_finding = finding(report, "dependencies.lock-signal")
+    assert lock_finding.status is Status.PASS
+    assert lock_finding.source_paths == (lock_name,)
+
+
+def test_fixture_lockfiles_do_not_change_repository_reproducibility(make_repo):
+    root = make_repo(
+        {
+            "pyproject.toml": "[project]\nname='x'\nversion='0.1.0'\n",
+            "tests/fixtures/node/package-lock.json": "{}",
+            "testdata/python/pylock.toml": "lock-version = '1.0'\n",
+        }
+    )
+    report = scan_repository(root)
+
+    assert finding(report, "dependencies.lock-signal").status is Status.INFO
 
 
 def test_malformed_package_json_fails_without_crashing(make_repo):
