@@ -11,3 +11,14 @@ updates:
     open-pull-requests-limit: 5
     commit-message:
       prefix: "ci"
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      python:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
