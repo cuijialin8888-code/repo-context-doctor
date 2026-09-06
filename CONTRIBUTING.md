@@ -45,6 +45,12 @@ Every finding needs a stable ID, category, status, summary, details, evidence, r
 
 Prefer high-confidence explicit metadata. Inference must be labeled `INFERRED`, use no higher than medium confidence, and never claim the command succeeds. See [Adding a detector](docs/adding-a-detector.md).
 
+## Routine maintenance
+
+- Keep GitHub Actions on verified, immutable commit pins and wait for the full cross-platform CI matrix on public `main` after a workflow update.
+- Preserve the offline, no-subprocess, no-telemetry boundary; routine work must not add network access, target-command execution, or runtime dependencies.
+- Recheck privacy canaries whenever excerpt sanitization or reporting paths change.
+
 ## Pull requests
 
 - Keep unrelated formatting or refactors out of the change.
