@@ -8,6 +8,8 @@ All notable changes to this project are documented here. The format follows [Kee
 
 - Recognize standardized `pylock.toml` and `pylock.<name>.toml` Python lockfile signals.
 - A report review guide covering provenance, UNKNOWN findings, sensitive paths, and score limits.
+- Add CI policy gates with `--fail-on` and configurable bounded-scan limits for depth, entries, and file size.
+- Detect additional presence-only ecosystems and lockfile signals for Scala, Elixir, Dart/Flutter, Composer, Bundler, Gradle, Swift, and Go workspaces.
 
 ### Fixed
 

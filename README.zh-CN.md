@@ -65,6 +65,8 @@ python -m pip install "repo-context-doctor @ git+https://github.com/cuijialin888
 
 ```text
 repo-context-doctor [PATH] [--json | --markdown] [--output FILE] [--no-score]
+                    [--fail-on {none,fail,warn,unknown}]
+                    [--max-depth N] [--max-entries N] [--max-file-bytes N]
 ```
 
 ```bash
@@ -79,9 +81,15 @@ repo-context-doctor . --markdown --output context-report.md
 
 # 不显示启发式分数
 repo-context-doctor . --no-score
+
+# 在 CI 中把 WARN 及以上发现作为门槛
+repo-context-doctor . --json --fail-on warn
+
+# 对大型或较深仓库调节有界扫描参数
+repo-context-doctor . --json --max-depth 6 --max-entries 50000 --max-file-bytes 524288
 ```
 
-扫描完成返回 `0`，即使报告中存在缺口；参数错误返回 `2`；意外的致命扫描错误返回 `3`。发现项和分数都不是 CI 质量门。
+默认 `--fail-on none` 时，只要扫描完成就返回 `0`；`--fail-on fail` 遇到 `FAIL` 返回 `1`，`warn` 对 `WARN` 及以上返回 `1`，`unknown` 对 `UNKNOWN` 及以上返回 `1`。参数错误返回 `2`，意外的致命扫描错误返回 `3`。门槛只检查发现项，不会执行扫描到的命令。
 
 卸载命令：`python -m pip uninstall repo-context-doctor`。
 
@@ -116,7 +124,7 @@ Verification paths (not executed)
 - `.github/copilot-instructions.md` 和 `.github/instructions/*.instructions.md`；
 - `.cursor/rules/*.mdc` 和旧版 `.cursorrules`。
 
-Python、Node.js、Rust、Go、PowerShell 提供较深的验证路径检测；混合仓库还会获得通用 manifest、锁文件、CI 和目录结构信号。每条命令都会标出 `MANIFEST`、`INSTRUCTION`、`DOCUMENTATION`、`CI`、`MAKEFILE` 或 `INFERRED` 来源以及可信度，但绝不会被执行。
+Python、Node.js、Rust、Go、PowerShell 提供较深的验证路径检测；Java/Kotlin、Scala、PHP、Ruby、Swift、Elixir、Dart/Flutter 和 .NET 提供存在性信号。混合仓库还会获得通用 manifest、锁文件、CI 和目录结构信号。每条命令都会标出 `MANIFEST`、`INSTRUCTION`、`DOCUMENTATION`、`CI`、`MAKEFILE` 或 `INFERRED` 来源以及可信度，但绝不会被执行。
 
 准确范围请查看[支持的信号](docs/supported-signals.md)与[报告格式](docs/report-format.md)。
 
@@ -127,7 +135,7 @@ Python、Node.js、Rust、Go、PowerShell 提供较深的验证路径检测；�
 - 跳过常见密钥文件，并对疑似凭证值进行纵深脱敏，包括独立出现的 OpenAI 与 GitHub Token 格式；
 - 报告仅使用仓库相对路径；
 - 超大、无法解码或无法访问的元数据会标为 `UNKNOWN`，不会假装不存在；
-- 默认限制深度 10、条目 20,000、单个文本文件 256 KiB。
+- 默认限制深度 10、条目 20,000、单个文本文件 256 KiB；可用 `--max-depth`、`--max-entries`、`--max-file-bytes` 为单次扫描调节。
 
 这些措施不是完整的密钥扫描器或沙箱。若目标仓库敏感，在公开报告前仍应人工复核。
 

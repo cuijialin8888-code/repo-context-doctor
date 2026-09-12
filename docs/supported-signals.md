@@ -31,7 +31,7 @@ Deep verification logic exists for:
 - PowerShell: `.ps1`, `.psd1`, `.psm1`, and `.Tests.ps1` structure;
 - Generic repositories: instructions, documentation, Make targets, CI presence, root orientation, and common manifests.
 
-Presence-only ecosystem signals include Maven/Gradle, PHP Composer, Ruby Bundler, Swift Package Manager, and .NET project/solution files. Presence-only means the report does not invent ecosystem commands.
+Presence-only ecosystem signals include Maven/Gradle, Scala, PHP Composer, Ruby Bundler, Swift Package Manager, Elixir, Dart/Flutter, and .NET project/solution files. Presence-only means the report does not invent ecosystem commands.
 
 Manifests deeper than four directory levels or below `fixtures`/`testdata` directories are not semantically interpreted. Invalid JSON/TOML manifests produce a `FAIL` rather than being treated as absent.
 
@@ -57,7 +57,7 @@ GitHub Actions receives shallow `run:` inspection. GitLab CI, Azure Pipelines, a
 - root README and CONTRIBUTING/docs orientation;
 - conventional source and test directory names;
 - workspace or multi-manifest monorepo hints;
-- common Node, Rust, Go, and Python lockfiles, including standardized `pylock.toml` names;
+- common Node, Rust, Go, Python, Composer, Bundler, Gradle, Swift, and Elixir lockfiles, including standardized `pylock.toml` names;
 - mismatch between Node `packageManager` and lockfile family;
 - multiple Node lockfile families.
 
@@ -65,7 +65,7 @@ Lockfile detection is presence-only, ignores `fixtures` and `testdata` trees, an
 
 ## Scan limits
 
-Defaults are fixed in version 0.1.0:
+Defaults are conservative and can be overridden with `--max-depth`, `--max-entries`, and `--max-file-bytes`:
 
 - maximum directory depth: 10;
 - maximum discovered entries: 20,000;
@@ -74,4 +74,4 @@ Defaults are fixed in version 0.1.0:
 - symlinks are skipped;
 - VCS, virtual environment, dependency, build, cache, IDE, and common generated directories are excluded.
 
-Limit hits, decode failures, and read failures remain visible as `UNKNOWN` findings or scan metadata.
+Limit hits, decode failures, and read failures remain visible as `UNKNOWN` findings or scan metadata. Larger limits can increase scan cost.

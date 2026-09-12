@@ -17,7 +17,19 @@ _NODE_LOCKS = {
     "pnpm-lock.yaml": "pnpm",
     "yarn.lock": "yarn",
 }
-_OTHER_LOCKS = {"cargo.lock", "go.sum", "pipfile.lock", "poetry.lock", "uv.lock"}
+_OTHER_LOCKS = {
+    "cargo.lock",
+    "composer.lock",
+    "gemfile.lock",
+    "go.sum",
+    "go.work.sum",
+    "gradle.lockfile",
+    "mix.lock",
+    "package.resolved",
+    "pipfile.lock",
+    "poetry.lock",
+    "uv.lock",
+}
 _PYLOCK_NAME = re.compile(r"^pylock(?:\.[^.]+)?\.toml$")
 _FIXTURE_DIRECTORIES = {"fixtures", "testdata"}
 

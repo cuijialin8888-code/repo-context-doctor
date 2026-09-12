@@ -58,6 +58,38 @@ def test_standard_python_lockfile_is_detected(make_repo, lock_name):
     assert lock_finding.source_paths == (lock_name,)
 
 
+@pytest.mark.parametrize(
+    "lock_name",
+    [
+        "Cargo.lock",
+        "composer.lock",
+        "Gemfile.lock",
+        "go.work.sum",
+        "gradle.lockfile",
+        "mix.lock",
+        "Package.resolved",
+    ],
+)
+def test_common_non_node_lockfiles_are_detected(make_repo, lock_name):
+    root = make_repo({lock_name: "lock data\n"})
+    report = scan_repository(root)
+
+    lock_finding = finding(report, "dependencies.lock-signal")
+    assert lock_finding.status is Status.PASS
+    assert lock_finding.source_paths == (lock_name,)
+
+
+@pytest.mark.parametrize(
+    ("manifest", "ecosystem"),
+    [("mix.exs", "Elixir"), ("pubspec.yaml", "Dart/Flutter"), ("build.sbt", "Scala")],
+)
+def test_additional_manifests_are_presence_signals(make_repo, manifest, ecosystem):
+    root = make_repo({manifest: "# metadata\n"})
+    report = scan_repository(root)
+
+    assert report.ecosystems == [ecosystem]
+
+
 def test_fixture_lockfiles_do_not_change_repository_reproducibility(make_repo):
     root = make_repo(
         {

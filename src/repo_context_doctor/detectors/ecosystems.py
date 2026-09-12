@@ -27,9 +27,12 @@ class EcosystemState:
 _OTHER_MANIFESTS = {
     "build.gradle": "Java",
     "build.gradle.kts": "Java/Kotlin",
+    "build.sbt": "Scala",
     "composer.json": "PHP",
     "gemfile": "Ruby",
+    "mix.exs": "Elixir",
     "package.swift": "Swift",
+    "pubspec.yaml": "Dart/Flutter",
     "pom.xml": "Java",
 }
 

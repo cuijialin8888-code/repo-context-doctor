@@ -64,6 +64,8 @@ This alternative requires Git. Contributors should use the source-checkout workf
 
 ```text
 repo-context-doctor [PATH] [--json | --markdown] [--output FILE] [--no-score]
+                    [--fail-on {none,fail,warn,unknown}]
+                    [--max-depth N] [--max-entries N] [--max-file-bytes N]
 ```
 
 ```bash
@@ -78,9 +80,15 @@ repo-context-doctor . --markdown --output context-report.md
 
 # Inventory without the optional heuristic score
 repo-context-doctor . --no-score
+
+# Use the report as a conservative CI policy gate
+repo-context-doctor . --json --fail-on warn
+
+# Tune bounded discovery for a large or deeply nested repository
+repo-context-doctor . --json --max-depth 6 --max-entries 50000 --max-file-bytes 524288
 ```
 
-Exit code `0` means the scan completed, even when findings include gaps. Argument errors use `2`; an unexpected fatal scan error uses `3`. Findings and the optional score are evidence, not a CI quality gate.
+Exit code `0` means the scan completed and no selected policy gate was triggered. With the default `--fail-on none`, findings do not change the exit code. `--fail-on fail` gates on `FAIL`; `warn` gates on `WARN` or worse; `unknown` gates on `UNKNOWN` or worse. A triggered gate returns `1`; argument errors use `2`; an unexpected fatal scan error uses `3`. The gate checks findings only and never executes discovered commands.
 
 Uninstall with `python -m pip uninstall repo-context-doctor`.
 
@@ -117,7 +125,7 @@ Repo Context Doctor inventories common instruction surfaces, including:
 - `.github/copilot-instructions.md` and scoped `.github/instructions/*.instructions.md`;
 - `.cursor/rules/*.mdc` and legacy `.cursorrules`.
 
-It has deeper verification detection for Python, Node.js, Rust, Go, and PowerShell, plus generic manifest and CI signals for mixed repositories. Sources are distinguished as `MANIFEST`, `INSTRUCTION`, `DOCUMENTATION`, `CI`, `MAKEFILE`, or `INFERRED`.
+It has deeper verification detection for Python, Node.js, Rust, Go, and PowerShell, plus presence-only signals for Java/Kotlin, Scala, PHP, Ruby, Swift, Elixir, Dart/Flutter, and .NET. Sources are distinguished as `MANIFEST`, `INSTRUCTION`, `DOCUMENTATION`, `CI`, `MAKEFILE`, or `INFERRED`.
 
 See [supported signals](docs/supported-signals.md) and the [report format](docs/report-format.md) for exact behavior. Before sharing a report, follow the [report review guide](docs/report-review.md).
 

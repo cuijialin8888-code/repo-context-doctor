@@ -45,6 +45,60 @@ def test_cli_no_score(make_repo, capsys):
     assert json.loads(capsys.readouterr().out)["scores"] is None
 
 
+def test_cli_fail_on_warn_keeps_json_parseable(make_repo, capsys):
+    root = make_repo({})
+
+    code = main([str(root), "--json", "--fail-on", "warn"])
+    captured = capsys.readouterr()
+
+    assert code == 1
+    assert json.loads(captured.out)["summary"]["WARN"] > 0
+    assert "CI gate failed at --fail-on warn" in captured.err
+
+
+def test_cli_fail_on_fail_ignores_warnings(make_repo, capsys):
+    root = make_repo({"README.md": "# Example"})
+
+    code = main([str(root), "--json", "--fail-on", "fail"])
+    captured = capsys.readouterr()
+
+    assert code == 0
+    assert json.loads(captured.out)["summary"]["FAIL"] == 0
+    assert captured.err == ""
+
+
+def test_cli_scan_limits_are_reported(make_repo, capsys):
+    root = make_repo({"nested/AGENTS.md": "rules"})
+
+    assert (
+        main(
+            [
+                str(root),
+                "--json",
+                "--max-depth",
+                "0",
+                "--max-entries",
+                "100",
+                "--max-file-bytes",
+                "1024",
+            ]
+        )
+        == 0
+    )
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["scan"]["limits"] == {
+        "max_depth": 0,
+        "max_entries": 100,
+        "max_file_bytes": 1024,
+    }
+
+
+def test_cli_rejects_invalid_scan_limit(tmp_path):
+    with pytest.raises(SystemExit) as exc:
+        main([str(tmp_path), "--max-entries", "0"])
+    assert exc.value.code == 2
+
+
 def test_cli_nonexistent_directory_is_input_error(tmp_path):
     with pytest.raises(SystemExit) as exc:
         main([str(tmp_path / "missing")])
