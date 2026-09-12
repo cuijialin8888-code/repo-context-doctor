@@ -6,7 +6,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from repo_context_doctor.models import Status, TOOL_VERSION
+from repo_context_doctor.models import TOOL_VERSION, Status
 from repo_context_doctor.privacy import redact_text
 from repo_context_doctor.renderers.console import render_console
 from repo_context_doctor.renderers.json_renderer import render_json
