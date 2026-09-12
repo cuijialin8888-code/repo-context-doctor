@@ -7,6 +7,7 @@ All notable changes to this project are documented here. The format follows [Kee
 ### Added
 
 - Recognize standardized `pylock.toml` and `pylock.<name>.toml` Python lockfile signals.
+- A report review guide covering provenance, UNKNOWN findings, sensitive paths, and score limits.
 
 ### Fixed
 

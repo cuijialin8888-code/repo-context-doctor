@@ -119,7 +119,7 @@ Repo Context Doctor inventories common instruction surfaces, including:
 
 It has deeper verification detection for Python, Node.js, Rust, Go, and PowerShell, plus generic manifest and CI signals for mixed repositories. Sources are distinguished as `MANIFEST`, `INSTRUCTION`, `DOCUMENTATION`, `CI`, `MAKEFILE`, or `INFERRED`.
 
-See [supported signals](docs/supported-signals.md) and the [report format](docs/report-format.md) for exact behavior.
+See [supported signals](docs/supported-signals.md) and the [report format](docs/report-format.md) for exact behavior. Before sharing a report, follow the [report review guide](docs/report-review.md).
 
 ## Safety and privacy
 
