@@ -38,3 +38,5 @@ The CI workflow also exercises Python 3.11 and 3.13 on Windows, macOS, and Linux
 
 - 2026-08-17: verified the public `main` branch, recent GitHub Actions runs, and open issue/PR queues; no follow-up was required.
 - 2026-09-12: reviewed public `main`, open Issues/PRs, and recent Actions; no open Issues/PRs were present, and the latest main-branch CI run (`34034494387`) completed successfully.
+
+- 2026-09-19: reviewed public `main`, open Issues/PRs, and recent Actions; no open Issues/PRs were present. The latest main-branch CI run (`34676277904`) completed successfully after the prior Linux/Python 3.13 lint failure (`34676223000`) was corrected.
