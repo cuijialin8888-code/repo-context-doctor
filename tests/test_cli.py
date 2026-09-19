@@ -25,6 +25,18 @@ def test_cli_markdown_output(make_repo, capsys):
     assert capsys.readouterr().out.startswith("# Repo Context Doctor")
 
 
+def test_cli_sarif_output_is_machine_readable(make_repo, capsys):
+    root = make_repo({})
+
+    code = main([str(root), "--sarif"])
+    payload = json.loads(capsys.readouterr().out)
+
+    assert code == 0
+    assert payload["version"] == "2.1.0"
+    assert payload["runs"][0]["tool"]["driver"]["name"] == "Repo Context Doctor"
+    assert payload["runs"][0]["properties"]["read_only"] is True
+
+
 def test_cli_writes_only_explicit_output(make_repo, tmp_path, capsys):
     root = make_repo({"README.md": "# Example"})
     output = tmp_path / "report.json"

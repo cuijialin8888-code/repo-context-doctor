@@ -27,7 +27,7 @@ Repo Context Doctor shows what a coding agent can discover before it changes a r
 - test, lint, format, type-check, and build commands, with provenance and confidence;
 - CI, dependency, lockfile, ecosystem, and repository-orientation evidence;
 - clear `PASS`, `WARN`, `FAIL`, `INFO`, and `UNKNOWN` findings;
-- Console, JSON, and Markdown reports.
+- Console, JSON, Markdown, and SARIF 2.1.0 reports.
 
 It is deterministic, has no runtime dependencies, does not call an LLM or API, does not use the network, and never executes commands found in the target repository.
 
@@ -63,7 +63,7 @@ This alternative requires Git. Contributors should use the source-checkout workf
 ## Usage
 
 ```text
-repo-context-doctor [PATH] [--json | --markdown] [--output FILE] [--no-score]
+repo-context-doctor [PATH] [--json | --markdown | --sarif] [--output FILE] [--no-score]
                     [--fail-on {none,fail,warn,unknown}]
                     [--max-depth N] [--max-entries N] [--max-file-bytes N]
 ```
@@ -77,6 +77,9 @@ repo-context-doctor . --json
 
 # Write a Markdown artifact (the only requested target-side write)
 repo-context-doctor . --markdown --output context-report.md
+
+# Emit SARIF 2.1.0 for a code-scanning-compatible consumer
+repo-context-doctor . --sarif --output context-report.sarif
 
 # Inventory without the optional heuristic score
 repo-context-doctor . --no-score

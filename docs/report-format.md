@@ -1,6 +1,14 @@
 # Report format
 
-Console and Markdown are human views of the same `ScanReport` used by JSON. Renderers do not make diagnostic decisions.
+Console, Markdown, and SARIF are views of the same `ScanReport` used by JSON. Renderers do not make diagnostic decisions.
+
+## SARIF 2.1.0
+
+`--sarif` emits a SARIF 2.1.0 log for code-scanning-compatible consumers. Finding
+IDs become `ruleId` values, statuses map to SARIF levels (`FAIL` to `error`,
+`WARN` and `UNKNOWN` to `warning`, and informational evidence to `note`), and
+repository-relative `source_paths` become artifact locations. The report keeps
+the read-only boundary explicit in run properties and does not upload anything.
 
 ## JSON stability
 

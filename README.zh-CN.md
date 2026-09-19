@@ -30,7 +30,7 @@ Repo Context Doctor 帮你回答：编码代理进入仓库后，实际上能看
 - 不调用 API、不联网、不上传报告、无遥测；
 - 不执行目标仓库里的任何命令；
 - 默认只读，仅在显式使用 `--output` 时写入指定报告文件；
-- 输出 Console、JSON 或 Markdown。
+- 输出 Console、JSON、Markdown 或 SARIF 2.1.0。
 
 [English README](README.md)
 
@@ -64,7 +64,7 @@ python -m pip install "repo-context-doctor @ git+https://github.com/cuijialin888
 ## 用法
 
 ```text
-repo-context-doctor [PATH] [--json | --markdown] [--output FILE] [--no-score]
+repo-context-doctor [PATH] [--json | --markdown | --sarif] [--output FILE] [--no-score]
                     [--fail-on {none,fail,warn,unknown}]
                     [--max-depth N] [--max-entries N] [--max-file-bytes N]
 ```
@@ -78,6 +78,9 @@ repo-context-doctor . --json
 
 # 明确写出 Markdown 报告
 repo-context-doctor . --markdown --output context-report.md
+
+# 输出 SARIF 2.1.0，供兼容代码扫描的系统使用
+repo-context-doctor . --sarif --output context-report.sarif
 
 # 不显示启发式分数
 repo-context-doctor . --no-score

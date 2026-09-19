@@ -11,6 +11,7 @@ from repo_context_doctor.privacy import redact_text
 from repo_context_doctor.renderers.console import render_console
 from repo_context_doctor.renderers.json_renderer import render_json
 from repo_context_doctor.renderers.markdown import render_markdown
+from repo_context_doctor.renderers.sarif import render_sarif
 from repo_context_doctor.scanner import scan_repository
 from repo_context_doctor.snapshot import ScanLimits
 
@@ -54,6 +55,7 @@ def build_parser() -> argparse.ArgumentParser:
     output = parser.add_mutually_exclusive_group()
     output.add_argument("--json", action="store_true", help="Render machine-readable JSON")
     output.add_argument("--markdown", action="store_true", help="Render Markdown")
+    output.add_argument("--sarif", action="store_true", help="Render SARIF 2.1.0")
     parser.add_argument("--output", type=Path, help="Write the report to this explicit path")
     parser.add_argument("--no-score", action="store_true", help="Omit the heuristic evidence score")
     parser.add_argument(
@@ -90,6 +92,8 @@ def build_parser() -> argparse.ArgumentParser:
 def _render(args: argparse.Namespace, report) -> str:
     if args.json:
         return render_json(report)
+    if args.sarif:
+        return render_sarif(report)
     if args.markdown:
         return render_markdown(report)
     return render_console(report)
