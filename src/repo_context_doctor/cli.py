@@ -99,6 +99,19 @@ def _render(args: argparse.Namespace, report) -> str:
     return render_console(report)
 
 
+def _validate_output(output: Path, target: Path) -> None:
+    if any(path.is_symlink() for path in (output, *output.parents)):
+        raise ValueError("output cannot follow symbolic links")
+    candidate = output.resolve()
+    root = target.resolve()
+    if candidate == root or root in candidate.parents:
+        if candidate.exists():
+            raise ValueError("output inside the repository must be a new file")
+        relative = candidate.relative_to(root)
+        if any(part.lower() in {".git", ".hg", ".svn"} for part in relative.parts):
+            raise ValueError("output cannot be written inside version-control metadata")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -109,6 +122,11 @@ def main(argv: list[str] | None = None) -> int:
         parser.error(f"path is not a directory: {args.path}")
 
     try:
+        if args.output:
+            try:
+                _validate_output(args.output, target)
+            except ValueError as exc:
+                parser.error(str(exc))
         report = scan_repository(
             target,
             include_score=not args.no_score,

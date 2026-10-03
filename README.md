@@ -171,6 +171,10 @@ Repo Context Doctor does not:
 - YAML, Markdown, and manifest parsing is shallow and dependency-free rather than a full semantic parser.
 - A completed scan does not prove that every file was readable or every tool surface was recognized; check `UNKNOWN` findings and scan-limit metadata.
 
+## Safe report destinations
+
+On `main` (unreleased), an `--output` path inside the scanned repository must be a new file. Existing instructions, manifests, and other repository files cannot be overwritten, and output inside `.git`, `.hg`, or `.svn` metadata is refused. Symbolic-link output paths are also refused. Existing regular report files outside the target repository can still be replaced. Invalid destinations return the input-error exit code 2 before scanning.
+
 ## Development
 
 ```bash

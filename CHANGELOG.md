@@ -4,6 +4,8 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+- Validate report destinations before scanning; protect existing repository files, version-control metadata, and symbolic links from output writes.
+
 ### Added
 
 - Recognize standardized `pylock.toml` and `pylock.<name>.toml` Python lockfile signals.
