@@ -100,7 +100,7 @@ def _render(args: argparse.Namespace, report) -> str:
 
 
 def _validate_output(output: Path, target: Path) -> None:
-    if any(path.is_symlink() for path in (output, *output.parents)):
+    if output.is_symlink():
         raise ValueError("output cannot follow symbolic links")
     candidate = output.resolve()
     root = target.resolve()
