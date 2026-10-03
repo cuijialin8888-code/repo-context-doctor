@@ -122,3 +122,40 @@ def test_cli_version(capsys):
         main(["--version"])
     assert exc.value.code == 0
     assert capsys.readouterr().out.strip() == "repo-context-doctor 0.1.0"
+
+
+def test_cli_cannot_overwrite_repository_sources(make_repo):
+    root = make_repo({"AGENTS.md": "keep these instructions"})
+    output = root / "AGENTS.md"
+    before = output.read_bytes()
+    with pytest.raises(SystemExit) as exc:
+        main([str(root), "--json", "--output", str(output)])
+    assert exc.value.code == 2
+    assert output.read_bytes() == before
+
+
+def test_cli_can_create_new_report_but_not_git_metadata(make_repo, capsys):
+    root = make_repo({"README.md": "# Example", ".git/config": "preserve"})
+    output = root / "report.json"
+    assert main([str(root), "--json", "--output", str(output)]) == 0
+    assert json.loads(output.read_text(encoding="utf-8"))["schema_version"] == "1"
+    capsys.readouterr()
+    with pytest.raises(SystemExit) as exc:
+        main([str(root), "--output", str(root / ".git" / "new-report.json")])
+    assert exc.value.code == 2
+    assert not (root / ".git" / "new-report.json").exists()
+
+
+def test_cli_cannot_follow_output_symlink(make_repo, tmp_path):
+    root = make_repo({"README.md": "# Example"})
+    protected = tmp_path / "original.txt"
+    protected.write_text("preserve", encoding="utf-8")
+    output = tmp_path / "link.json"
+    try:
+        output.symlink_to(protected)
+    except OSError:
+        pytest.skip("symbolic links unavailable")
+    with pytest.raises(SystemExit) as exc:
+        main([str(root), "--output", str(output)])
+    assert exc.value.code == 2
+    assert protected.read_text(encoding="utf-8") == "preserve"
