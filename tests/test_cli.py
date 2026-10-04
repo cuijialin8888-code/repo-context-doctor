@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 
 import pytest
 
@@ -159,3 +160,42 @@ def test_cli_cannot_follow_output_symlink(make_repo, tmp_path):
         main([str(root), "--output", str(output)])
     assert exc.value.code == 2
     assert protected.read_text(encoding="utf-8") == "preserve"
+
+
+@pytest.mark.parametrize("source", ["README.md", "AGENTS.md", ".git/config"])
+def test_cli_cannot_overwrite_sources_through_external_hard_link(
+    make_repo, tmp_path, monkeypatch, capsys, source
+):
+    root = make_repo({source: "preserve these source bytes"})
+    protected = root / source
+    output = tmp_path / "external-report.json"
+    try:
+        os.link(protected, output)
+    except OSError:
+        pytest.skip("hard links unavailable")
+    before = protected.read_bytes()
+
+    def unexpected_scan(*args, **kwargs):
+        pytest.fail("invalid output must be rejected before scanning")
+
+    monkeypatch.setattr("repo_context_doctor.cli.scan_repository", unexpected_scan)
+    with pytest.raises(SystemExit) as exc:
+        main([str(root), "--json", "--output", str(output)])
+
+    assert exc.value.code == 2
+    assert protected.read_bytes() == before
+    assert output.read_bytes() == before
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "hard links" in captured.err
+
+
+def test_cli_can_replace_regular_external_report(make_repo, tmp_path, capsys):
+    root = make_repo({"README.md": "# Example"})
+    output = tmp_path / "existing-report.json"
+    output.write_text("old report", encoding="utf-8")
+
+    assert main([str(root), "--json", "--output", str(output)]) == 0
+    assert json.loads(output.read_text(encoding="utf-8"))["schema_version"] == "1"
+    assert root.joinpath("README.md").read_text(encoding="utf-8") == "# Example"
+    assert "Report written to existing-report.json" in capsys.readouterr().out

@@ -173,7 +173,7 @@ Repo Context Doctor does not:
 
 ## Safe report destinations
 
-On `main` (unreleased), an `--output` path inside the scanned repository must be a new file. Existing instructions, manifests, and other repository files cannot be overwritten, and output inside `.git`, `.hg`, or `.svn` metadata is refused. Symbolic-link output paths are also refused. Existing regular report files outside the target repository can still be replaced. Invalid destinations return the input-error exit code 2 before scanning.
+On `main` (unreleased), an `--output` path inside the scanned repository must be a new file. Existing instructions, manifests, and other repository files cannot be overwritten, and output inside `.git`, `.hg`, or `.svn` metadata is refused. Symbolic-link output paths and existing files with multiple hard links are also refused, including aliases outside the repository. Existing regular report files outside the target repository can still be replaced if they have a single hard link. Invalid destinations return the input-error exit code 2 before scanning.
 
 ## Development
 
