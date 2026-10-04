@@ -102,6 +102,8 @@ def _render(args: argparse.Namespace, report) -> str:
 def _validate_output(output: Path, target: Path) -> None:
     if output.is_symlink():
         raise ValueError("output cannot follow symbolic links")
+    if output.exists() and output.stat().st_nlink > 1:
+        raise ValueError("output cannot overwrite files with hard links")
     candidate = output.resolve()
     root = target.resolve()
     if candidate == root or root in candidate.parents:

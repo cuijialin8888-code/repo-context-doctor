@@ -4,6 +4,7 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+- Reject hard-linked report destinations before scanning to prevent external aliases from overwriting repository sources or version-control metadata.
 - Validate report destinations before scanning; protect existing repository files, version-control metadata, and symbolic links from output writes.
 
 ### Added
